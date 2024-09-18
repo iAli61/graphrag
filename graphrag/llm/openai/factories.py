@@ -21,7 +21,7 @@ from .json_parsing_llm import JsonParsingLLM
 from .openai_chat_llm import OpenAIChatLLM
 from .openai_completion_llm import OpenAICompletionLLM
 from .openai_configuration import OpenAIConfiguration
-from .openai_embeddings_llm import OpenAIEmbeddingsLLM
+from .embedding_llm import OpenAIEmbeddingsLLM
 from .openai_history_tracking_llm import OpenAIHistoryTrackingLLM
 from .openai_token_replacing_llm import OpenAITokenReplacingLLM
 from .types import OpenAIClientTypes

@@ -141,21 +141,17 @@ def create_graphrag_config(
             api_type = LLMType(api_type) if api_type else defs.LLM_TYPE
             api_key = reader.str(Fragment.api_key) or base.api_key
 
-            # In a unique events where:
-            # - same api_bases for LLM and embeddings (both Azure)
-            # - different api_bases for LLM and embeddings (both Azure)
-            # - LLM uses Azure OpenAI, while embeddings uses base OpenAI (this one is important)
-            # - LLM uses Azure OpenAI, while embeddings uses third-party OpenAI-like API
-            api_base = (
-                reader.str(Fragment.api_base) or base.api_base
-                if _is_azure(api_type)
-                else reader.str(Fragment.api_base)
-            )
-            api_version = (
-                reader.str(Fragment.api_version) or base.api_version
-                if _is_azure(api_type)
-                else reader.str(Fragment.api_version)
-            )
+            # Handle different API bases for different providers
+            if _is_azure(api_type):
+                api_base = reader.str(Fragment.api_base) or base.api_base
+                api_version = reader.str(Fragment.api_version) or base.api_version
+            elif api_type in [LLMType.OllamaEmbedding, LLMType.vLLMEmbedding]:
+                api_base = reader.str(Fragment.api_base)
+                api_version = None
+            else:
+                api_base = reader.str(Fragment.api_base)
+                api_version = reader.str(Fragment.api_version)
+
             api_organization = reader.str("organization") or base.organization
             api_proxy = reader.str("proxy") or base.proxy
             cognitive_services_endpoint = (
@@ -164,7 +160,7 @@ def create_graphrag_config(
             )
             deployment_name = reader.str(Fragment.deployment_name)
 
-            if api_key is None and not _is_azure(api_type):
+            if api_key is None and not _is_azure(api_type) and api_type != LLMType.OllamaEmbedding:
                 raise ApiKeyMissingError(embedding=True)
             if _is_azure(api_type):
                 if api_base is None:

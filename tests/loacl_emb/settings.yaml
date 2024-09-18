@@ -1,0 +1,12 @@
+ollama:
+  model: "nomic-embed-text"
+
+sentence_transformer:
+  model: "all-MiniLM-L6-v2"
+
+
+azure:
+  api_key: "f59ad347eb844f10be39a39615ed5392"
+  model: "text-embedding-3-small"
+  api_base: "https://aoai-gpt4-505.openai.azure.com/"
+  api_version: "2024-08-15-preview"
